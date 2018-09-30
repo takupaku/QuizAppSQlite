@@ -1,7 +1,9 @@
 package com.example.student.quizappsqlite.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,6 +19,7 @@ import com.example.student.quizappsqlite.model.Question;
 import com.example.student.quizappsqlite.sqlite.MyDB;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<Question> questionlist = new ArrayList<>();
@@ -53,7 +56,9 @@ private  int totalQuestion;
             String correct = radioButton.getText().toString();
             if(correct.equalsIgnoreCase(questionlist.get(position).getCurrectAns())){
                 Toast.makeText(this, "Correct", Toast.LENGTH_SHORT).show();
-                position++;
+//                if(position < totalQuestion-1)
+//                position++;
+                position= new Random().nextInt(totalQuestion);
                 viewData();
             }
             else {
@@ -104,18 +109,37 @@ private  int totalQuestion;
             viewData();
         }
         else {
-            Toast.makeText(this, "no question found", Toast.LENGTH_SHORT).show();
+            alert();
+            //Toast.makeText(this, "no question found", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void alert() {
+        new AlertDialog.Builder(this).setTitle("WRONG ANSWER").setMessage("u r wrong").setCancelable(false).setPositiveButton("continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                onResume();
+            }
+        }).setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        }).show();
     }
 
     private void viewData() {
         try {
             question.setText(questionlist.get(position).getQuestion());
             ans1.setText(questionlist.get(position).getOption1());
+            ans1.setChecked(false);
             ans2.setText(questionlist.get(position).getOption2());
+            ans2.setChecked(false);
             ans3.setText(questionlist.get(position).getOption3());
+            ans3.setChecked(false);
             ans4.setText(questionlist.get(position).getOption4());
+            ans4.setChecked(false);
         }
         catch (Exception e){
             
